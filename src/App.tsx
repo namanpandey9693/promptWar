@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from './store/useAppStore';
 
@@ -19,7 +19,7 @@ const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
 import AuthGuard from './components/AuthGuard';
 
-import { User, Lightbulb, CheckSquare, Activity, Component, Map, MessageSquare, GraduationCap, Rocket } from 'lucide-react';
+import { User, Lightbulb, CheckSquare, Activity, Component, Map, MessageSquare, GraduationCap, Rocket, Menu, X } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/profile', icon: <User size={18} />, label: 'Student Profile', requiresProfile: false },
@@ -52,12 +52,17 @@ function PageLoadingFallback() {
   );
 }
 
-function TopHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function TopHeader({ title, subtitle, onMenuClick }: { title: string; subtitle: string; onMenuClick: () => void }) {
   return (
     <header className="top-header fade-in" role="banner">
-      <div className="top-header-left">
-        <div className="top-header-title">{title}</div>
-        {subtitle && <div className="top-header-subtitle">{subtitle}</div>}
+      <div className="top-header-left" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+        <button className="mobile-menu-btn" onClick={onMenuClick} aria-label="Open menu">
+          <Menu size={24} />
+        </button>
+        <div>
+          <div className="top-header-title">{title}</div>
+          {subtitle && <div className="top-header-subtitle">{subtitle}</div>}
+        </div>
       </div>
       <div className="top-header-right">
         <div
@@ -75,7 +80,7 @@ function TopHeader({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
-function Sidebar() {
+function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
   const profile = useAppStore((s) => s.profile);
@@ -83,20 +88,25 @@ function Sidebar() {
   const healthScore = realityCheck?.healthScore;
 
   return (
-    <aside className="sidebar" role="navigation" aria-label="Main navigation">
-      <div
-        className="sidebar-logo"
-        onClick={() => navigate('/')}
-        onKeyDown={(e) => e.key === 'Enter' && navigate('/')}
-        role="button"
-        tabIndex={0}
-        aria-label="Go to homepage"
-      >
-        <div className="sidebar-logo-title">
-          <span className="sidebar-logo-icon" aria-hidden="true"><Rocket size={20} /></span>
-          ProjectPilot AI
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`} role="navigation" aria-label="Main navigation">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div
+          className="sidebar-logo"
+          onClick={() => { navigate('/'); onClose(); }}
+          onKeyDown={(e) => { e.key === 'Enter' && navigate('/'); onClose(); }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to homepage"
+        >
+          <div className="sidebar-logo-title">
+            <span className="sidebar-logo-icon" aria-hidden="true"><Rocket size={20} /></span>
+            ProjectPilot AI
+          </div>
+          <div className="sidebar-logo-subtitle">AI Project Mentor</div>
         </div>
-        <div className="sidebar-logo-subtitle">AI Project Mentor</div>
+        <button className="mobile-menu-btn mobile-close-btn" onClick={onClose} aria-label="Close menu">
+          <X size={24} />
+        </button>
       </div>
 
       <nav className="sidebar-nav" aria-label="Application sections">
@@ -109,7 +119,12 @@ function Sidebar() {
             <button
               key={item.path}
               className={`sidebar-link ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
-              onClick={() => !isDisabled && navigate(item.path)}
+              onClick={() => {
+                if (!isDisabled) {
+                  navigate(item.path);
+                  onClose();
+                }
+              }}
               disabled={isDisabled}
               aria-current={isActive ? 'page' : undefined}
               aria-disabled={isDisabled}
@@ -168,9 +183,42 @@ const getPageInfo = (path: string) => {
   return map[path] || { title: 'Dashboard', sub: '' };
 };
 
-export default function App() {
+function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const pageInfo = getPageInfo(location.pathname);
+
+  // Auto-close sidebar on route change for mobile
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  return (
+    <div className="app-layout">
+      {/* Mobile backdrop */}
+      <div 
+        className={`sidebar-backdrop ${sidebarOpen ? 'open' : ''}`} 
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+      
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      
+      <main className="main-content" id="main-content" role="main" aria-label={pageInfo.title}>
+        <TopHeader 
+          title={pageInfo.title} 
+          subtitle={pageInfo.sub} 
+          onMenuClick={() => setSidebarOpen(true)} 
+        />
+        <div className="page-content">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default function App() {
   const profile = useAppStore((state) => state.profile);
 
   useEffect(() => {
@@ -230,24 +278,18 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           <Route path="/*" element={
-            <div className="app-layout">
-              <Sidebar />
-              <main className="main-content" id="main-content" role="main" aria-label={pageInfo.title}>
-                <TopHeader title={pageInfo.title} subtitle={pageInfo.sub} />
-                <div className="page-content">
-                  <Routes>
-                    <Route path="/profile" element={<AuthGuard><ProfilePage /></AuthGuard>} />
-                    <Route path="/projects" element={<AuthGuard><ProjectsPage /></AuthGuard>} />
-                    <Route path="/reality-check" element={<AuthGuard><RealityCheckPage /></AuthGuard>} />
-                    <Route path="/health-score" element={<AuthGuard><HealthScorePage /></AuthGuard>} />
-                    <Route path="/architecture" element={<AuthGuard><ArchitecturePage /></AuthGuard>} />
-                    <Route path="/roadmap" element={<AuthGuard><RoadmapPage /></AuthGuard>} />
-                    <Route path="/mentor" element={<AuthGuard><MentorPage /></AuthGuard>} />
-                    <Route path="/viva" element={<AuthGuard><VivaPage /></AuthGuard>} />
-                  </Routes>
-                </div>
-              </main>
-            </div>
+            <DashboardLayout>
+              <Routes>
+                <Route path="/profile" element={<AuthGuard><ProfilePage /></AuthGuard>} />
+                <Route path="/projects" element={<AuthGuard><ProjectsPage /></AuthGuard>} />
+                <Route path="/reality-check" element={<AuthGuard><RealityCheckPage /></AuthGuard>} />
+                <Route path="/health-score" element={<AuthGuard><HealthScorePage /></AuthGuard>} />
+                <Route path="/architecture" element={<AuthGuard><ArchitecturePage /></AuthGuard>} />
+                <Route path="/roadmap" element={<AuthGuard><RoadmapPage /></AuthGuard>} />
+                <Route path="/mentor" element={<AuthGuard><MentorPage /></AuthGuard>} />
+                <Route path="/viva" element={<AuthGuard><VivaPage /></AuthGuard>} />
+              </Routes>
+            </DashboardLayout>
           } />
         </Routes>
       </Suspense>
