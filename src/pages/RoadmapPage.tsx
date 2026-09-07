@@ -17,16 +17,6 @@ export default function RoadmapPage() {
   const [error, setError] = useState('');
   const [expandedPhases, setExpandedPhases] = useState<Set<number>>(new Set([0]));
 
-  useEffect(() => {
-    if (!profile || !projectTitle) {
-      navigate('/reality-check');
-      return;
-    }
-    if (!roadmap) {
-      loadRoadmap();
-    }
-  }, []);
-
   const loadRoadmap = async () => {
     if (!profile) return;
     setLoading(true);
@@ -42,6 +32,16 @@ export default function RoadmapPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!profile || !projectTitle) {
+      navigate('/reality-check');
+      return;
+    }
+    if (!roadmap) {
+      loadRoadmap();
+    }
+  }, [profile, projectTitle, roadmap, navigate]);
 
   const togglePhase = (idx: number) => {
     setExpandedPhases((prev) => {

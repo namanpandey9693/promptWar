@@ -64,7 +64,7 @@ export default function LandingPage() {
         <div className="slide-up" style={{ animationDelay: '0.4s', display: 'flex', gap: 'var(--space-md)', justifyContent: 'center' }}>
           <button
             className="btn btn-primary btn-lg"
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate('/login')}
             style={{ padding: '16px 36px', fontSize: '1.1rem' }}
           >
             🚀 Build My Project

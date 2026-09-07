@@ -30,16 +30,6 @@ export default function VivaPage() {
   const [evaluations, setEvaluations] = useState<Record<number, VivaEvaluation>>({});
   const [evaluating, setEvaluating] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!profile || !projectTitle) {
-      navigate('/reality-check');
-      return;
-    }
-    if (vivaQuestions.length === 0) {
-      loadQuestions();
-    }
-  }, []);
-
   const loadQuestions = async () => {
     if (!profile) return;
     setLoading(true);
@@ -53,6 +43,16 @@ export default function VivaPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!profile || !projectTitle) {
+      navigate('/reality-check');
+      return;
+    }
+    if (vivaQuestions.length === 0) {
+      loadQuestions();
+    }
+  }, [profile, projectTitle, vivaQuestions.length, navigate]);
 
   const handleEvaluate = async (qIdx: number, question: VivaQuestion) => {
     const answer = answers[qIdx];

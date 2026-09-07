@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { generateProjects, type ProjectIdea } from '../services/api';
+import { RefreshCw, Edit3, ChevronRight, Activity, Clock, Lightbulb } from 'lucide-react';
 
 export default function ProjectsPage() {
   const navigate = useNavigate();
@@ -12,16 +13,6 @@ export default function ProjectsPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!profile) {
-      navigate('/profile');
-      return;
-    }
-    if (projects.length === 0) {
-      loadProjects();
-    }
-  }, []);
 
   const loadProjects = async () => {
     if (!profile) return;
@@ -36,6 +27,16 @@ export default function ProjectsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!profile) {
+      navigate('/profile');
+      return;
+    }
+    if (projects.length === 0) {
+      loadProjects();
+    }
+  }, [profile, projects.length, navigate]);
 
   const selectProject = (project: ProjectIdea) => {
     setSelectedProject(project);
@@ -86,10 +87,10 @@ export default function ProjectsPage() {
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
           <button className="btn btn-secondary" onClick={() => navigate('/reality-check')}>
-            Custom Input
+            <Edit3 size={16} /> Custom Input
           </button>
           <button className="btn btn-ghost" onClick={loadProjects}>
-            Regenerate
+            <RefreshCw size={16} /> Regenerate
           </button>
         </div>
       </div>
@@ -122,17 +123,20 @@ export default function ProjectsPage() {
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-sm)', borderTop: '1px solid var(--border-light)', paddingTop: 'var(--space-md)' }}>
-               <div style={{ textAlign: 'center' }}>
+               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Lightbulb size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
                   <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.innovationScore}/10</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Innovation</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Innovation</div>
                </div>
-               <div style={{ textAlign: 'center' }}>
+               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Activity size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
                   <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.feasibilityScore}/10</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Feasibility</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Feasibility</div>
                </div>
-               <div style={{ textAlign: 'center' }}>
+               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Clock size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
                   <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.estimatedDuration}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time</div>
                </div>
             </div>
           </div>

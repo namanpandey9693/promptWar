@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { Dumbbell, Target, Zap, Wrench, AlertTriangle, Rocket, Lightbulb, Component, Calendar, MessageSquare, GraduationCap, ArrowLeft } from 'lucide-react';
 
 function ScoreGauge({ score, size = 240 }: { score: number; size?: number }) {
   const radius = (size - 30) / 2;
@@ -176,34 +177,34 @@ export default function HealthScorePage() {
         <h2 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 'var(--space-lg)', borderBottom: '1px solid var(--border-light)', paddingBottom: 'var(--space-sm)' }}>
           Deep Insights
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-md)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-xl)' }}>
           <div className="card glass-panel card-hover">
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>💪</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--success)' }}><Dumbbell size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Core Strength</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.biggestStrength}</div>
           </div>
           <div className="card glass-panel card-hover">
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>🎯</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--warning)' }}><Target size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Primary Weakness</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.biggestWeakness}</div>
           </div>
           <div className="card glass-panel card-hover">
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>⚡</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--accent)' }}><Zap size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Technical Risk</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.technicalRisk}</div>
           </div>
           <div className="card glass-panel card-hover">
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>🔧</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--danger)' }}><Wrench size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Implementation Risk</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.implementationRisk}</div>
           </div>
           <div className="card glass-panel card-hover" style={{ gridColumn: '1 / -1' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>💥</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--danger)' }}><AlertTriangle size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Failure Scenario</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.failureScenario}</div>
           </div>
           <div className="card glass-panel card-hover" style={{ gridColumn: '1 / -1' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: 'var(--space-sm)' }}>🚀</div>
+            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--primary)' }}><Rocket size={24} /></div>
             <div style={{ fontSize: '0.9rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Optimization Vector</div>
             <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.improvementSuggestion}</div>
           </div>
@@ -213,7 +214,7 @@ export default function HealthScorePage() {
       {alternativeSuggestion && (
         <div className="card glass-panel" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)', marginBottom: 'var(--space-xl)' }}>
           <h4 style={{ color: 'var(--primary)', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-            <span style={{ fontSize: '1.2rem' }}>💡</span> Suggested Pivot
+            <Lightbulb size={20} /> Suggested Pivot
           </h4>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{alternativeSuggestion}</p>
         </div>
@@ -221,19 +222,19 @@ export default function HealthScorePage() {
 
       <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-2xl)' }}>
         <button className="btn btn-primary glow-on-hover" onClick={() => navigate('/architecture')}>
-          🏗️ View Architecture
+          <Component size={18} /> View Architecture
         </button>
         <button className="btn btn-primary glow-on-hover" onClick={() => navigate('/roadmap')}>
-          📅 Generate Roadmap
+          <Calendar size={18} /> Generate Roadmap
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/mentor')}>
-          💬 AI Consultant
+          <MessageSquare size={18} /> AI Consultant
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/viva')}>
-          🎓 Prep Defense
+          <GraduationCap size={18} /> Prep Defense
         </button>
         <button className="btn btn-ghost" onClick={() => navigate('/reality-check')}>
-          ← Return
+          <ArrowLeft size={18} /> Return
         </button>
       </div>
     </div>

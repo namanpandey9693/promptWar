@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from './store/useAppStore';
 
@@ -13,15 +13,23 @@ const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const MentorPage = lazy(() => import('./pages/MentorPage'));
 const VivaPage = lazy(() => import('./pages/VivaPage'));
 
+// Auth Pages
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+import AuthGuard from './components/AuthGuard';
+
+import { User, Lightbulb, CheckSquare, Activity, Component, Map, MessageSquare, GraduationCap, Rocket } from 'lucide-react';
+
 const NAV_ITEMS = [
-  { path: '/profile', icon: '👤', label: 'Student Profile', requiresProfile: false },
-  { path: '/projects', icon: '🎯', label: 'Project Ideas', requiresProfile: true },
-  { path: '/reality-check', icon: '🔍', label: 'Reality Check', requiresProfile: true },
-  { path: '/health-score', icon: '📊', label: 'Health Score', requiresRealityCheck: true },
-  { path: '/architecture', icon: '🏗️', label: 'Architecture', requiresRealityCheck: true },
-  { path: '/roadmap', icon: '🗺️', label: 'Roadmap', requiresRealityCheck: true },
-  { path: '/mentor', icon: '💬', label: 'AI Mentor', requiresRealityCheck: true },
-  { path: '/viva', icon: '🎓', label: 'Viva Prep', requiresRealityCheck: true },
+  { path: '/profile', icon: <User size={18} />, label: 'Student Profile', requiresProfile: false },
+  { path: '/projects', icon: <Lightbulb size={18} />, label: 'Project Ideas', requiresProfile: true },
+  { path: '/reality-check', icon: <CheckSquare size={18} />, label: 'Reality Check', requiresProfile: true },
+  { path: '/health-score', icon: <Activity size={18} />, label: 'Health Score', requiresRealityCheck: true },
+  { path: '/architecture', icon: <Component size={18} />, label: 'Architecture', requiresRealityCheck: true },
+  { path: '/roadmap', icon: <Map size={18} />, label: 'Roadmap', requiresRealityCheck: true },
+  { path: '/mentor', icon: <MessageSquare size={18} />, label: 'AI Mentor', requiresRealityCheck: true },
+  { path: '/viva', icon: <GraduationCap size={18} />, label: 'Viva Prep', requiresRealityCheck: true },
 ];
 
 /** Loading fallback shown while lazy chunks are loading */
@@ -85,7 +93,7 @@ function Sidebar() {
         aria-label="Go to homepage"
       >
         <div className="sidebar-logo-title">
-          <span className="sidebar-logo-icon" aria-hidden="true">🚀</span>
+          <span className="sidebar-logo-icon" aria-hidden="true"><Rocket size={20} /></span>
           ProjectPilot AI
         </div>
         <div className="sidebar-logo-subtitle">AI Project Mentor</div>
@@ -162,8 +170,16 @@ const getPageInfo = (path: string) => {
 
 export default function App() {
   const location = useLocation();
-  const isLanding = location.pathname === '/';
   const pageInfo = getPageInfo(location.pathname);
+  const profile = useAppStore((state) => state.profile);
+
+  useEffect(() => {
+    // EMERGENCY BACKUP: Preserve in-memory state before it gets wiped by store refactoring
+    const currentState = useAppStore.getState();
+    if (currentState.profile && currentState.profile.name) {
+      localStorage.setItem('projectpilot_legacy_backup', JSON.stringify(currentState));
+    }
+  }, [profile]);
 
   return (
     <>
@@ -206,28 +222,33 @@ export default function App() {
       </a>
 
       <Suspense fallback={<PageLoadingFallback />}>
-        {isLanding ? (
-          <LandingPage />
-        ) : (
-          <div className="app-layout">
-            <Sidebar />
-            <main className="main-content" id="main-content" role="main" aria-label={pageInfo.title}>
-              <TopHeader title={pageInfo.title} subtitle={pageInfo.sub} />
-              <Routes>
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/reality-check" element={<RealityCheckPage />} />
-                <Route path="/health-score" element={<HealthScorePage />} />
-                <Route path="/architecture" element={<ArchitecturePage />} />
-                <Route path="/roadmap" element={<RoadmapPage />} />
-                <Route path="/mentor" element={<MentorPage />} />
-                <Route path="/viva" element={<VivaPage />} />
-              </Routes>
-            </main>
-          </div>
-        )}
         <Routes>
-          <Route path="/" element={<></>} />
+          <Route path="/" element={<LandingPage />} />
+          
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          <Route path="/*" element={
+            <div className="app-layout">
+              <Sidebar />
+              <main className="main-content" id="main-content" role="main" aria-label={pageInfo.title}>
+                <TopHeader title={pageInfo.title} subtitle={pageInfo.sub} />
+                <div className="page-content">
+                  <Routes>
+                    <Route path="/profile" element={<AuthGuard><ProfilePage /></AuthGuard>} />
+                    <Route path="/projects" element={<AuthGuard><ProjectsPage /></AuthGuard>} />
+                    <Route path="/reality-check" element={<AuthGuard><RealityCheckPage /></AuthGuard>} />
+                    <Route path="/health-score" element={<AuthGuard><HealthScorePage /></AuthGuard>} />
+                    <Route path="/architecture" element={<AuthGuard><ArchitecturePage /></AuthGuard>} />
+                    <Route path="/roadmap" element={<AuthGuard><RoadmapPage /></AuthGuard>} />
+                    <Route path="/mentor" element={<AuthGuard><MentorPage /></AuthGuard>} />
+                    <Route path="/viva" element={<AuthGuard><VivaPage /></AuthGuard>} />
+                  </Routes>
+                </div>
+              </main>
+            </div>
+          } />
         </Routes>
       </Suspense>
     </>

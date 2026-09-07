@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { realityCheck as realityCheckApi } from '../services/api';
+import { Zap, Server, Edit3 } from 'lucide-react';
 
 export default function RealityCheckPage() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function RealityCheckPage() {
     if (!profile) {
       navigate('/profile');
     }
-  }, []);
+  }, [profile, navigate]);
 
   const handleAnalyze = async () => {
     if (!profile) return;
@@ -86,14 +87,14 @@ export default function RealityCheckPage() {
             className={`btn ${mode === 'selected' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setMode('selected')}
           >
-            Generated Project
+            <Server size={16} /> Generated Project
           </button>
         )}
         <button
           className={`btn ${mode === 'custom' ? 'btn-primary' : 'btn-secondary'}`}
           onClick={() => setMode('custom')}
         >
-          Custom Input
+          <Edit3 size={16} /> Custom Input
         </button>
       </div>
 
@@ -153,7 +154,7 @@ export default function RealityCheckPage() {
             style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--space-sm)' }}
             id="analyze-project-btn"
             >
-            <span style={{ fontSize: '1.2rem' }}>⚡</span> Execute Diagnostic
+            <Zap size={20} /> Execute Diagnostic
             </button>
         </div>
       </div>

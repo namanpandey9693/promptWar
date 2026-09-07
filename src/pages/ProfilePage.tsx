@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { Wand2 } from 'lucide-react';
 
 const PROGRAMMING_SKILLS = [
   'Python', 'JavaScript', 'TypeScript', 'Java', 'C++', 'C', 'C#',
@@ -254,7 +255,7 @@ export default function ProfilePage() {
 
         <div style={{ marginTop: 'var(--space-xl)', textAlign: 'center' }}>
           <button type="submit" className="btn btn-primary btn-lg" style={{ padding: '16px 48px', fontSize: '1.1rem', width: '100%', maxWidth: 400 }}>
-            🚀 Generate My Project Ideas
+            <Wand2 size={18} /> Generate My Project Ideas
           </button>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-md)' }}>
             Powered by ProjectPilot AI

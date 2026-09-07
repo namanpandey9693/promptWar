@@ -22,16 +22,6 @@ export default function ArchitecturePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!profile || !projectTitle) {
-      navigate('/reality-check');
-      return;
-    }
-    if (!architecture) {
-      loadArchitecture();
-    }
-  }, []);
-
   const loadArchitecture = async () => {
     if (!profile) return;
     setLoading(true);
@@ -45,6 +35,16 @@ export default function ArchitecturePage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!profile || !projectTitle) {
+      navigate('/reality-check');
+      return;
+    }
+    if (!architecture) {
+      loadArchitecture();
+    }
+  }, [profile, projectTitle, architecture, navigate]);
 
   if (loading) {
     return (

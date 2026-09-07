@@ -14,7 +14,20 @@ interface ChatMessage {
   content: string;
 }
 
+export interface UserSession {
+  email: string;
+  name: string;
+  picture?: string;
+  token?: string;
+}
+
 interface AppState {
+  // Auth
+  isAuthenticated: boolean;
+  currentUser: UserSession | null;
+  loginUser: (session: UserSession) => void;
+  logout: () => void;
+
   // Profile
   profile: StudentProfile | null;
   setProfile: (profile: StudentProfile) => void;
@@ -65,6 +78,71 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  isAuthenticated: false,
+  currentUser: null,
+  
+  loginUser: (session) => {
+    const stored = localStorage.getItem(`projectpilot_user_${session.email}`);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        set({ ...parsed, isAuthenticated: true, currentUser: session });
+        return;
+      } catch (e) {
+        console.error("Failed to parse stored user data");
+      }
+    }
+    
+    // Legacy migration for Nama Pandey's profile
+    const legacy = localStorage.getItem('projectpilot_legacy_backup');
+    if (legacy) {
+      try {
+        const parsedLegacy = JSON.parse(legacy);
+        const isNamaAccount = session.name.toLowerCase().includes('nama') || session.name.toLowerCase().includes('pandey');
+        if (parsedLegacy.profile?.name === 'Nama Pandey' && !localStorage.getItem('legacy_migrated') && isNamaAccount) {
+          localStorage.setItem('legacy_migrated', 'true');
+          set({ ...parsedLegacy, isAuthenticated: true, currentUser: session });
+          return;
+        }
+      } catch (e) {}
+    }
+    
+    // Fresh start for new user
+    set({
+      isAuthenticated: true,
+      currentUser: session,
+      profile: null,
+      projects: [],
+      selectedProject: null,
+      customProjectTitle: '',
+      customProjectDescription: '',
+      realityCheck: null,
+      architecture: null,
+      roadmap: null,
+      chatHistory: [],
+      vivaQuestions: [],
+      currentStep: 'landing'
+    });
+  },
+  
+  logout: () => {
+    set({
+      isAuthenticated: false,
+      currentUser: null,
+      profile: null,
+      projects: [],
+      selectedProject: null,
+      customProjectTitle: '',
+      customProjectDescription: '',
+      realityCheck: null,
+      architecture: null,
+      roadmap: null,
+      chatHistory: [],
+      vivaQuestions: [],
+      currentStep: 'landing'
+    });
+  },
+
   profile: null,
   setProfile: (profile) => set({
     profile,
@@ -160,3 +238,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     return state.selectedProject?.techStack || [];
   },
 }));
+
+useAppStore.subscribe((state) => {
+  if (state.isAuthenticated && state.currentUser?.email) {
+    localStorage.setItem(`projectpilot_user_${state.currentUser.email}`, JSON.stringify(state));
+  }
+});

@@ -98,37 +98,37 @@ export default function MentorPage() {
           )}
 
           {chatHistory.map((msg, idx) => (
-            <div key={idx} className={`chat-message ${msg.role === 'user' ? 'user' : 'ai'}`} style={{ 
-                display: 'flex', 
-                gap: 'var(--space-md)', 
-                alignItems: 'flex-start',
-                flexDirection: msg.role === 'user' ? 'row-reverse' : 'row'
+            <div key={idx} className={`chat-message ${msg.role === 'user' ? 'user' : 'ai'}`} style={{
+              display: 'flex',
+              gap: 'var(--space-md)',
+              alignItems: 'flex-start',
+              flexDirection: msg.role === 'user' ? 'row-reverse' : 'row'
             }}>
-              <div className="chat-avatar" style={{ 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: '50%', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '1.2rem',
-                  background: msg.role === 'user' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                  border: `1px solid ${msg.role === 'user' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
-                  flexShrink: 0
+              <div className="chat-avatar" style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.2rem',
+                background: msg.role === 'user' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                border: `1px solid ${msg.role === 'user' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
+                flexShrink: 0
               }}>
                 {msg.role === 'user' ? '👤' : '🧠'}
               </div>
-              <div className="chat-bubble" style={{ 
-                  padding: 'var(--space-md) var(--space-lg)', 
-                  borderRadius: 'var(--radius-lg)', 
-                  background: msg.role === 'user' ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
-                  border: msg.role === 'user' ? 'none' : '1px solid var(--border-light)',
-                  color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
-                  maxWidth: '75%',
-                  lineHeight: 1.6,
-                  boxShadow: msg.role === 'user' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none',
-                  borderTopRightRadius: msg.role === 'user' ? 4 : 'var(--radius-lg)',
-                  borderTopLeftRadius: msg.role === 'ai' ? 4 : 'var(--radius-lg)',
+              <div className="chat-bubble" style={{
+                padding: 'var(--space-md) var(--space-lg)',
+                borderRadius: 'var(--radius-lg)',
+                background: msg.role === 'user' ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                border: msg.role === 'user' ? 'none' : '1px solid var(--border-light)',
+                color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
+                maxWidth: '75%',
+                lineHeight: 1.6,
+                boxShadow: msg.role === 'user' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none',
+                borderTopRightRadius: 4,
+                borderTopLeftRadius: 'var(--radius-lg)',
               }}>
                 {msg.content.split('\n').map((line, i) => (
                   <p key={i} style={{ marginBottom: line ? '0.5em' : 0 }}>{line}</p>
@@ -140,13 +140,13 @@ export default function MentorPage() {
           {loading && (
             <div className="chat-message ai" style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'flex-start' }}>
               <div className="chat-avatar" style={{ width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                  🧠
+                🧠
               </div>
               <div className="chat-bubble" style={{ padding: 'var(--space-md) var(--space-lg)', borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderTopLeftRadius: 4 }}>
                 <div style={{ display: 'flex', gap: 6, padding: '8px 4px' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both' }} />
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.16s' }} />
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.32s' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.16s' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '0.32s' }} />
                 </div>
               </div>
             </div>
