@@ -79,13 +79,13 @@ export default function VivaPage() {
 
   if (loading) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot pulsing" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ marginBottom: 'var(--space-sm)' }}>Compiling Defense Questions</h2>
         <p style={{ color: 'var(--text-muted)' }}>Analyzing architecture to generate high-probability examiner queries...</p>
-        <div style={{ marginTop: 'var(--space-2xl)', display: 'flex', gap: 'var(--space-md)' }}>
+        <div className="viva-skeleton-list">
            {[1, 2, 3].map(i => (
-               <div key={i} className="glass-panel" style={{ width: 120, height: 160, borderRadius: 'var(--radius-lg)', animation: `float ${2 + i * 0.5}s infinite ease-in-out` }} />
+               <div key={i} className="glass-panel viva-skeleton-item" style={{ animationDelay: `${i * 0.5}s` }} />
            ))}
         </div>
       </div>
@@ -94,7 +94,7 @@ export default function VivaPage() {
 
   if (error) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot offline" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ color: 'var(--danger)', marginBottom: 'var(--space-sm)' }}>Generation Failed</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)' }}>{error}</p>
@@ -109,16 +109,16 @@ export default function VivaPage() {
   );
 
   return (
-    <div className="fade-in" style={{ maxWidth: 800, margin: '0 auto' }}>
-      <div className="page-header" style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
+    <div className="fade-in viva-container">
+      <div className="page-header viva-header">
         <h1 className="page-title text-gradient">Defense Simulator</h1>
-        <p className="page-subtitle" style={{ fontSize: '1.1rem' }}>
+        <p className="page-subtitle">
           Mock examination for <strong>{projectTitle}</strong>
         </p>
       </div>
 
       {/* Category Tabs */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-sm)', justifyContent: 'center', marginBottom: 'var(--space-2xl)' }}>
+      <div className="viva-category-tabs">
         {availableCategories.map((cat) => (
           <button
             key={cat}
@@ -132,22 +132,19 @@ export default function VivaPage() {
       </div>
 
       {/* Questions */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
+      <div className="viva-questions-list">
         {filteredQuestions.map((question, idx) => {
           const globalIdx = vivaQuestions.indexOf(question);
           const evaluation = evaluations[globalIdx];
 
           return (
-            <div key={globalIdx} className="card glass-panel slide-in" style={{ animationDelay: `${idx * 0.1}s`, padding: 'var(--space-xl)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-lg)' }}>
-                <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
-                    <div style={{ 
-                        width: 32, height: 32, borderRadius: 8, background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary)', 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 
-                    }}>
+            <div key={globalIdx} className="card glass-panel slide-in viva-question-card" style={{ animationDelay: `${idx * 0.1}s` }}>
+              <div className="viva-question-header">
+                <div className="viva-question-title-wrapper">
+                    <div className="viva-question-number">
                         Q{idx + 1}
                     </div>
-                    <h4 style={{ flex: 1, fontSize: '1.15rem', lineHeight: 1.5 }}>
+                    <h4 className="viva-question-text">
                     {question.question}
                     </h4>
                 </div>
@@ -156,26 +153,25 @@ export default function VivaPage() {
                 </span>
               </div>
 
-              <div style={{ position: 'relative' }}>
+              <div className="viva-textarea-wrapper">
                 <textarea
                     className="form-textarea"
                     placeholder="Draft your defense response..."
                     rows={4}
                     value={answers[globalIdx] || ''}
                     onChange={(e) => setAnswers((prev) => ({ ...prev, [globalIdx]: e.target.value }))}
-                    style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-light)' }}
                     disabled={!!evaluation}
                 />
                 
                 {!evaluation && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'var(--space-md)' }}>
+                    <div className="viva-submit-wrapper">
                         <button
-                            className="btn btn-primary glow-on-hover"
+                            className="btn btn-primary glow-on-hover viva-submit-btn"
                             onClick={() => handleEvaluate(globalIdx, question)}
                             disabled={evaluating === globalIdx || !answers[globalIdx]?.trim()}
                         >
                             {evaluating === globalIdx ? (
-                                <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                                <span className="viva-btn-content">
                                     <div className="status-dot pulsing" /> Processing
                                 </span>
                             ) : 'Submit for Grading'}
@@ -185,51 +181,43 @@ export default function VivaPage() {
               </div>
 
               {evaluation && (
-                <div className="evaluation-card slide-in" style={{ marginTop: 'var(--space-lg)', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-light)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-lg)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{
-                        fontSize: '2.5rem',
-                        fontWeight: 800,
-                        color: getScoreColor(evaluation.score),
-                        lineHeight: 1,
-                        textShadow: `0 0 12px ${getScoreColor(evaluation.score)}40`
-                        }}>
+                <div className="evaluation-card slide-in viva-evaluation-card">
+                  <div className="viva-score-header">
+                    <div className="viva-score-display">
+                        <div className="viva-score-number" style={{ color: getScoreColor(evaluation.score), textShadow: `0 0 12px ${getScoreColor(evaluation.score)}40` }}>
                         {evaluation.score}
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 4 }}>/ 10</div>
+                        <div className="viva-score-max">/ 10</div>
                     </div>
-                    <div style={{ flex: 1, height: 8, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
-                      <div style={{
+                    <div className="viva-score-bar-bg">
+                      <div className="viva-score-bar-fill" style={{
                         width: `${evaluation.score * 10}%`,
-                        height: '100%',
                         background: getScoreColor(evaluation.score),
                         boxShadow: `0 0 8px ${getScoreColor(evaluation.score)}80`,
-                        transition: 'width 1s ease-out'
                       }} />
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)' }}>
+                  <div className="viva-evaluation-grid">
                     <div>
-                        <div style={{ fontWeight: 600, color: 'var(--success)', fontSize: '0.9rem', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: '1.2rem' }}>✅</span> Positives
+                        <div className="viva-eval-section-title" style={{ color: 'var(--success)' }}>
+                            <span>✅</span> Positives
                         </div>
-                        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{evaluation.whatWasGood}</p>
+                        <p className="viva-eval-text">{evaluation.whatWasGood}</p>
                     </div>
 
                     <div>
-                        <div style={{ fontWeight: 600, color: 'var(--warning)', fontSize: '0.9rem', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: '1.2rem' }}>⚠️</span> Missing Elements
+                        <div className="viva-eval-section-title" style={{ color: 'var(--warning)' }}>
+                            <span>⚠️</span> Missing Elements
                         </div>
-                        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{evaluation.whatWasMissing}</p>
+                        <p className="viva-eval-text">{evaluation.whatWasMissing}</p>
                     </div>
 
-                    <div style={{ gridColumn: '1 / -1', background: 'rgba(59, 130, 246, 0.05)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-                        <div style={{ fontWeight: 600, color: 'var(--primary)', fontSize: '0.9rem', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: '1.2rem' }}>💡</span> Optimal Response
+                    <div className="viva-optimal-response">
+                        <div className="viva-eval-section-title" style={{ color: 'var(--primary)' }}>
+                            <span>💡</span> Optimal Response
                         </div>
-                        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{evaluation.betterAnswer}</p>
+                        <p className="viva-eval-text">{evaluation.betterAnswer}</p>
                     </div>
                   </div>
                 </div>

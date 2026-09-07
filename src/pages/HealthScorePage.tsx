@@ -128,112 +128,101 @@ export default function HealthScorePage() {
 
   return (
     <div className="fade-in">
-      <div className="page-header" style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
+      <div className="page-header health-header">
         <h1 className="page-title text-gradient">Diagnostic Report</h1>
-        <p className="page-subtitle" style={{ fontSize: '1.1rem' }}>{projectTitle}</p>
+        <p className="page-subtitle">{projectTitle}</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-        <div className="card glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-2xl)' }}>
+      <div className="health-score-grid">
+        <div className="card glass-panel health-gauge-card">
           <ScoreGauge score={healthScore} />
         </div>
 
-        <div className="card glass-panel" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 'var(--space-xl)' }}>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-md)' }}>System Verdict</div>
-          <div style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: 'var(--space-sm)',
-              padding: 'var(--space-sm) var(--space-md)',
+        <div className="card glass-panel health-verdict-card">
+          <div className="verdict-label">System Verdict</div>
+          <div className="verdict-badge" style={{ 
               background: `${getVerdictColor(verdict)}20`,
               color: getVerdictColor(verdict),
-              border: `1px solid ${getVerdictColor(verdict)}40`,
-              borderRadius: 'var(--radius-lg)',
-              fontWeight: 600,
-              fontSize: '1.2rem',
-              marginBottom: 'var(--space-lg)',
-              alignSelf: 'flex-start'
+              borderColor: `${getVerdictColor(verdict)}40`
           }}>
             {VERDICT_ICONS[verdict]} {VERDICT_LABELS[verdict]}
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6 }}>
+          <p className="verdict-explanation">
             {verdictExplanation}
           </p>
         </div>
       </div>
 
-      <div style={{ marginBottom: 'var(--space-2xl)' }}>
-        <h2 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 'var(--space-lg)', borderBottom: '1px solid var(--border-light)', paddingBottom: 'var(--space-sm)' }}>
+      <div className="health-section">
+        <h2 className="section-title">
           Vector Analysis
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--space-md)' }}>
+        <div className="vector-analysis-grid">
           {Object.entries(scores).map(([key, value]) => (
             <MetricBar key={key} label={scoreLabels[key] || key} value={value as number} />
           ))}
         </div>
       </div>
 
-      <div style={{ marginBottom: 'var(--space-2xl)' }}>
-        <h2 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 'var(--space-lg)', borderBottom: '1px solid var(--border-light)', paddingBottom: 'var(--space-sm)' }}>
+      <div className="health-section">
+        <h2 className="section-title">
           Deep Insights
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-xl)' }}>
+        <div className="insights-grid">
           <div className="card glass-panel card-hover">
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--success)' }}><Dumbbell size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Core Strength</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.biggestStrength}</div>
-          </div>
-          <div className="card glass-panel card-hover">
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--warning)' }}><Target size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Primary Weakness</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.biggestWeakness}</div>
+            <div className="insight-icon" style={{ color: 'var(--success)' }}><Dumbbell size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--success)' }}>Core Strength</div>
+            <div className="insight-desc">{analysis.biggestStrength}</div>
           </div>
           <div className="card glass-panel card-hover">
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--accent)' }}><Zap size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Technical Risk</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.technicalRisk}</div>
+            <div className="insight-icon" style={{ color: 'var(--warning)' }}><Target size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--warning)' }}>Primary Weakness</div>
+            <div className="insight-desc">{analysis.biggestWeakness}</div>
           </div>
           <div className="card glass-panel card-hover">
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--danger)' }}><Wrench size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Implementation Risk</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.implementationRisk}</div>
+            <div className="insight-icon" style={{ color: 'var(--accent)' }}><Zap size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--accent)' }}>Technical Risk</div>
+            <div className="insight-desc">{analysis.technicalRisk}</div>
           </div>
-          <div className="card glass-panel card-hover" style={{ gridColumn: '1 / -1' }}>
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--danger)' }}><AlertTriangle size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Failure Scenario</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.failureScenario}</div>
+          <div className="card glass-panel card-hover">
+            <div className="insight-icon" style={{ color: 'var(--danger)' }}><Wrench size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--danger)' }}>Implementation Risk</div>
+            <div className="insight-desc">{analysis.implementationRisk}</div>
           </div>
-          <div className="card glass-panel card-hover" style={{ gridColumn: '1 / -1' }}>
-            <div style={{ marginBottom: 'var(--space-sm)', color: 'var(--primary)' }}><Rocket size={24} /></div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-xs)', fontWeight: 600 }}>Optimization Vector</div>
-            <div style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>{analysis.improvementSuggestion}</div>
+          <div className="card glass-panel card-hover full-width">
+            <div className="insight-icon" style={{ color: 'var(--danger)' }}><AlertTriangle size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--danger)' }}>Failure Scenario</div>
+            <div className="insight-desc">{analysis.failureScenario}</div>
+          </div>
+          <div className="card glass-panel card-hover full-width">
+            <div className="insight-icon" style={{ color: 'var(--primary)' }}><Rocket size={24} /></div>
+            <div className="insight-label" style={{ color: 'var(--primary)' }}>Optimization Vector</div>
+            <div className="insight-desc">{analysis.improvementSuggestion}</div>
           </div>
         </div>
       </div>
 
       {alternativeSuggestion && (
-        <div className="card glass-panel" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)', marginBottom: 'var(--space-xl)' }}>
-          <h4 style={{ color: 'var(--primary)', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-            <Lightbulb size={20} /> Suggested Pivot
-          </h4>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{alternativeSuggestion}</p>
+        <div className="card glass-panel alternative-suggestion-card">
+          <h4><Lightbulb size={20} /> Suggested Pivot</h4>
+          <p>{alternativeSuggestion}</p>
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-2xl)' }}>
-        <button className="btn btn-primary glow-on-hover" onClick={() => navigate('/architecture')}>
+      <div className="health-actions">
+        <button className="btn btn-primary glow-on-hover health-btn" onClick={() => navigate('/architecture')}>
           <Component size={18} /> View Architecture
         </button>
-        <button className="btn btn-primary glow-on-hover" onClick={() => navigate('/roadmap')}>
+        <button className="btn btn-primary glow-on-hover health-btn" onClick={() => navigate('/roadmap')}>
           <Calendar size={18} /> Generate Roadmap
         </button>
-        <button className="btn btn-secondary" onClick={() => navigate('/mentor')}>
+        <button className="btn btn-secondary health-btn" onClick={() => navigate('/mentor')}>
           <MessageSquare size={18} /> AI Consultant
         </button>
-        <button className="btn btn-secondary" onClick={() => navigate('/viva')}>
+        <button className="btn btn-secondary health-btn" onClick={() => navigate('/viva')}>
           <GraduationCap size={18} /> Prep Defense
         </button>
-        <button className="btn btn-ghost" onClick={() => navigate('/reality-check')}>
+        <button className="btn btn-ghost health-btn" onClick={() => navigate('/reality-check')}>
           <ArrowLeft size={18} /> Return
         </button>
       </div>

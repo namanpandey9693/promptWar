@@ -45,14 +45,14 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot pulsing" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ marginBottom: 'var(--space-sm)' }}>Synthesizing Ideas</h2>
         <p style={{ color: 'var(--text-muted)' }}>Analyzing your profile to generate personalized architectures...</p>
         
-        <div className="projects-grid" style={{ width: '100%', marginTop: 'var(--space-xl)', opacity: 0.5 }}>
+        <div className="projects-grid projects-skeleton-grid">
           {[1, 2, 3].map(i => (
-             <div key={i} className="card glass-panel" style={{ height: 300, animation: 'pulse 2s infinite' }} />
+             <div key={i} className="card glass-panel projects-skeleton-card" />
           ))}
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function ProjectsPage() {
 
   if (error) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot offline" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ color: 'var(--danger)', marginBottom: 'var(--space-sm)' }}>Generation Failed</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)' }}>{error}</p>
@@ -78,14 +78,14 @@ export default function ProjectsPage() {
 
   return (
     <div className="fade-in">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-xl)' }}>
+      <div className="page-header projects-header">
         <div>
           <h1 className="page-title text-gradient">Generated Architectures</h1>
           <p className="page-subtitle">
             Curated ideas based on your expertise. Select a node to begin validation.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+        <div className="projects-header-actions">
           <button className="btn btn-secondary" onClick={() => navigate('/reality-check')}>
             <Edit3 size={16} /> Custom Input
           </button>
@@ -99,44 +99,44 @@ export default function ProjectsPage() {
         {projects.map((project, idx) => (
           <div
             key={idx}
-            className="card card-hover glass-panel slide-in glow-on-hover"
-            style={{ animationDelay: `${idx * 0.1}s`, cursor: 'pointer', display: 'flex', flexDirection: 'column' }}
+            className="card card-hover glass-panel slide-in glow-on-hover project-card"
+            style={{ animationDelay: `${idx * 0.1}s` }}
             onClick={() => selectProject(project)}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+            <div className="project-card-header">
+              <div className="project-difficulty-wrapper">
                 <div className="status-dot" style={{ backgroundColor: getDifficultyColor(project.difficulty) }} />
-                <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>{project.difficulty}</span>
+                <span className="project-difficulty-text">{project.difficulty}</span>
               </div>
               <span className="chip" style={{ borderColor: getResumeColor(project.resumeValue), color: getResumeColor(project.resumeValue) }}>
                 {project.resumeValue} impact
               </span>
             </div>
 
-            <h3 style={{ fontSize: '1.25rem', marginBottom: 'var(--space-sm)' }}>{project.title}</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: 'var(--space-lg)', flex: 1 }}>{project.description}</p>
+            <h3 className="project-card-title">{project.title}</h3>
+            <p className="project-card-desc">{project.description}</p>
 
-            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginBottom: 'var(--space-lg)' }}>
+            <div className="project-tech-stack">
               {project.techStack.map((tech) => (
                 <span key={tech} className="chip">{tech}</span>
               ))}
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-sm)', borderTop: '1px solid var(--border-light)', paddingTop: 'var(--space-md)' }}>
-               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Lightbulb size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
-                  <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.innovationScore}/10</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Innovation</div>
+            <div className="project-metrics-grid">
+               <div className="project-metric">
+                  <Lightbulb size={16} className="project-metric-icon" />
+                  <div className="project-metric-value">{project.innovationScore}/10</div>
+                  <div className="project-metric-label">Innovation</div>
                </div>
-               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Activity size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
-                  <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.feasibilityScore}/10</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Feasibility</div>
+               <div className="project-metric">
+                  <Activity size={16} className="project-metric-icon" />
+                  <div className="project-metric-value">{project.feasibilityScore}/10</div>
+                  <div className="project-metric-label">Feasibility</div>
                </div>
-               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Clock size={16} style={{ marginBottom: 4, color: 'var(--accent-primary)' }} />
-                  <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>{project.estimatedDuration}</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time</div>
+               <div className="project-metric">
+                  <Clock size={16} className="project-metric-icon" />
+                  <div className="project-metric-value">{project.estimatedDuration}</div>
+                  <div className="project-metric-label">Time</div>
                </div>
             </div>
           </div>

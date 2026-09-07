@@ -48,13 +48,13 @@ export default function ArchitecturePage() {
 
   if (loading) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot pulsing" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ marginBottom: 'var(--space-sm)' }}>Drafting Architecture</h2>
         <p style={{ color: 'var(--text-muted)' }}>Synthesizing optimal system topology and data flows...</p>
-        <div style={{ display: 'flex', gap: 'var(--space-lg)', marginTop: 'var(--space-2xl)' }}>
+        <div className="arch-skeleton-list">
            {[1, 2, 3].map(i => (
-               <div key={i} className="glass-panel" style={{ width: 60, height: 60, borderRadius: '50%', animation: `pulse ${1.5 + i * 0.2}s infinite` }} />
+               <div key={i} className="glass-panel arch-skeleton-item" style={{ animationDelay: `${i * 0.2}s` }} />
            ))}
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function ArchitecturePage() {
 
   if (error) {
     return (
-      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div className="fade-in loading-container">
         <div className="status-dot offline" style={{ width: 24, height: 24, marginBottom: 'var(--space-md)' }} />
         <h2 style={{ color: 'var(--danger)', marginBottom: 'var(--space-sm)' }}>Topology Generation Failed</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)' }}>{error}</p>
@@ -82,87 +82,87 @@ export default function ArchitecturePage() {
   ];
 
   return (
-    <div className="fade-in">
-      <div className="page-header" style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
+    <div className="fade-in arch-container">
+      <div className="page-header arch-header">
         <h1 className="page-title text-gradient">System Topology</h1>
-        <p className="page-subtitle" style={{ fontSize: '1.1rem' }}>{projectTitle}</p>
+        <p className="page-subtitle">{projectTitle}</p>
       </div>
 
       {/* Architecture Flow */}
-      <div style={{ marginBottom: 'var(--space-3xl)' }}>
-        <h2 style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: 'var(--space-xl)', textAlign: 'center' }}>
+      <div className="arch-flow-section">
+        <h2 className="section-title text-center">
           Data Flow Architecture
         </h2>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+        <div className="arch-flow-container">
           
-          <div className="arch-node slide-in card glass-panel glow-on-hover" style={{ width: 300, textAlign: 'center', zIndex: 2 }}>
-            <div style={{ fontSize: '2rem', marginBottom: 'var(--space-xs)' }}>👤</div>
-            <div style={{ fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Client Request</div>
+          <div className="arch-node slide-in card glass-panel glow-on-hover arch-flow-node">
+            <div className="arch-node-icon">👤</div>
+            <div className="arch-node-label">Client Request</div>
           </div>
 
           {layers.map((layer, idx) => (
-            <div key={layer.key} className="slide-in" style={{ animationDelay: `${(idx + 1) * 0.15}s`, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', position: 'relative' }}>
-              <div style={{ height: 40, width: 2, background: 'linear-gradient(to bottom, var(--primary), var(--accent))', opacity: 0.5 }} />
+            <div key={layer.key} className="slide-in arch-flow-step" style={{ animationDelay: `${(idx + 1) * 0.15}s` }}>
+              <div className="arch-flow-line" />
               
-              <div className="card glass-panel card-hover" style={{ width: '100%', maxWidth: 500, display: 'flex', alignItems: 'flex-start', gap: 'var(--space-md)', zIndex: 2, position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: 'var(--primary)' }} />
-                <div style={{ fontSize: '2.5rem', background: 'rgba(255,255,255,0.05)', padding: 'var(--space-sm)', borderRadius: 'var(--radius-md)' }}>
+              <div className="card glass-panel card-hover arch-layer-card">
+                <div className="arch-layer-accent" />
+                <div className="arch-layer-icon">
                     {LAYER_ICONS[layer.key]}
                 </div>
-                <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xs)' }}>
-                        <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{layer.key === 'aiLayer' ? 'AI Engine' : layer.key}</h3>
-                        <span className="chip" style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>{layer.tech}</span>
+                <div className="arch-layer-content">
+                    <div className="arch-layer-header">
+                        <h3 className="arch-layer-title">{layer.key === 'aiLayer' ? 'AI Engine' : layer.key}</h3>
+                        <span className="chip chip-primary-light">{layer.tech}</span>
                     </div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>{layer.description}</p>
+                    <p className="arch-layer-desc">{layer.description}</p>
                 </div>
               </div>
             </div>
           ))}
 
-          <div style={{ height: 40, width: 2, background: 'linear-gradient(to bottom, var(--accent), var(--success))', opacity: 0.5 }} />
+          <div className="arch-flow-line-success" />
           
-          <div className="arch-node slide-in card glass-panel glow-on-hover" style={{ width: 300, textAlign: 'center', zIndex: 2, animationDelay: '0.8s' }}>
-            <div style={{ fontSize: '2rem', marginBottom: 'var(--space-xs)' }}>✨</div>
-            <div style={{ fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--success)' }}>Response Delivered</div>
+          <div className="arch-node slide-in card glass-panel glow-on-hover arch-flow-node" style={{ animationDelay: '0.8s' }}>
+            <div className="arch-node-icon">✨</div>
+            <div className="arch-node-label success-text">Response Delivered</div>
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-xl)', marginBottom: 'var(--space-3xl)' }}>
+      <div className="arch-details-grid">
         {/* APIs */}
         <div className="card glass-panel">
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', color: 'var(--text-muted)' }}><span style={{ marginRight: '8px' }}>🔗</span> Integration Points</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-sm)' }}>
+            <h3 className="arch-detail-title"><span>🔗</span> Integration Points</h3>
+            <div className="arch-chip-list">
                 {architecture.apis.map((api, idx) => (
-                <span key={idx} className="chip" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>{api}</span>
+                <span key={idx} className="chip chip-success-light">{api}</span>
                 ))}
             </div>
         </div>
 
         {/* Auth */}
         <div className="card glass-panel">
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', color: 'var(--text-muted)' }}><span style={{ marginRight: '8px' }}>🔐</span> Security & Auth</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{architecture.authentication}</p>
+            <h3 className="arch-detail-title"><span>🔐</span> Security & Auth</h3>
+            <p className="arch-detail-text">{architecture.authentication}</p>
         </div>
         
         {/* Deployment */}
-        <div className="card glass-panel" style={{ gridColumn: '1 / -1' }}>
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', color: 'var(--text-muted)' }}><span style={{ marginRight: '8px' }}>🚀</span> Infrastructure & Deployment</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{architecture.deployment}</p>
+        <div className="card glass-panel full-width">
+            <h3 className="arch-detail-title"><span>🚀</span> Infrastructure & Deployment</h3>
+            <p className="arch-detail-text">{architecture.deployment}</p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-xl)', marginBottom: 'var(--space-xl)' }}>
+      <div className="arch-bottom-grid">
           {/* Main Modules */}
           <div>
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', color: 'var(--text-muted)' }}>Core Modules</h3>
-            <div className="modules-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--space-md)' }}>
+            <h3 className="arch-detail-title">Core Modules</h3>
+            <div className="modules-grid">
                 {architecture.mainModules.map((mod, idx) => (
-                <div key={idx} className="card glass-panel card-hover slide-in" style={{ animationDelay: `${idx * 0.1}s`, borderTop: '2px solid var(--primary)' }}>
-                    <h4 style={{ marginBottom: 'var(--space-sm)', fontSize: '1rem', color: 'var(--text-primary)' }}>{mod.name}</h4>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>{mod.description}</p>
+                <div key={idx} className="card glass-panel card-hover slide-in arch-module-card" style={{ animationDelay: `${idx * 0.1}s` }}>
+                    <h4 className="arch-module-title">{mod.name}</h4>
+                    <p className="arch-module-desc">{mod.description}</p>
                 </div>
                 ))}
             </div>
@@ -170,19 +170,15 @@ export default function ArchitecturePage() {
 
           {/* Data Flow */}
           <div>
-            <h3 style={{ fontSize: '1.1rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', color: 'var(--text-muted)' }}>Execution Sequence</h3>
-            <div className="card glass-panel" style={{ padding: 'var(--space-xl)' }}>
-                <ol style={{ paddingLeft: 0, margin: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+            <h3 className="arch-detail-title">Execution Sequence</h3>
+            <div className="card glass-panel sequence-card">
+                <ol className="arch-sequence-list">
                 {architecture.dataFlow.map((step, idx) => (
-                    <li key={idx} style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'flex-start' }}>
-                        <div style={{ 
-                            minWidth: 28, height: 28, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.1)', 
-                            color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                            fontWeight: 600, fontSize: '0.9rem', border: '1px solid rgba(59, 130, 246, 0.3)' 
-                        }}>
+                    <li key={idx} className="arch-sequence-item">
+                        <div className="arch-sequence-number">
                             {idx + 1}
                         </div>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, paddingTop: 2 }}>
+                        <div className="arch-sequence-text">
                             {step}
                         </div>
                     </li>
